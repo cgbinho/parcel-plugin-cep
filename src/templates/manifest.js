@@ -1,4 +1,4 @@
-module.exports = function({
+module.exports = function ({
   bundleName = 'My Extension',
   bundleId = 'com.test.test.extension',
   version = '1.0.0',
@@ -11,6 +11,7 @@ module.exports = function({
     '--allow-file-access-from-files',
     '--allow-file-access',
     '--enable-nodejs',
+    '--mixed-context',
   ],
   iconNormal,
   iconRollover,
@@ -18,12 +19,15 @@ module.exports = function({
   iconDarkRollover,
   lifecycle,
 }) {
-  if (process.env.NODE_ENV === 'development' && cefParams.indexOf('--mixed-context') === -1) {
+  if (
+    process.env.NODE_ENV === 'development' &&
+    cefParams.indexOf('--mixed-context') === -1
+  ) {
     cefParams.push('--mixed-context')
   }
 
   var commandLineParams = cefParams.map(
-    cefParam => `<Parameter>${cefParam}</Parameter>`
+    (cefParam) => `<Parameter>${cefParam}</Parameter>`
   )
 
   var icons = [
@@ -36,10 +40,15 @@ module.exports = function({
     .map(({ icon, type }) => `<Icon Type="${type}">${icon}</Icon>`)
     .join('\n            ')
 
-  var startOn = (!lifecycle.startOnEvents || lifecycle.startOnEvents.length === 0) ? '' : `
+  var startOn =
+    !lifecycle.startOnEvents || lifecycle.startOnEvents.length === 0
+      ? ''
+      : `
           <StartOn>
-            ${lifecycle.startOnEvents.map(e => `<Event>${e}</Event>`).join('\n            ')}
-          </StartOn>`;
+            ${lifecycle.startOnEvents
+              .map((e) => `<Event>${e}</Event>`)
+              .join('\n            ')}
+          </StartOn>`
 
   return `<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <ExtensionManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ExtensionBundleId="${bundleId}" ExtensionBundleName="${bundleName}" ExtensionBundleVersion="${bundleVersion}" Version="${cepVersion}">
@@ -49,7 +58,7 @@ module.exports = function({
   <ExecutionEnvironment>
     <HostList>
       ${hosts
-        .map(host => `<Host Name="${host.name}" Version="${host.version}" />`)
+        .map((host) => `<Host Name="${host.name}" Version="${host.version}" />`)
         .join('\n      ')}
     </HostList>
     <LocaleList>
