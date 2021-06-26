@@ -4,7 +4,7 @@ module.exports = function ({
   version = '1.0.0',
   hosts,
   bundleVersion = '1.0.0',
-  cepVersion = '6.0',
+  cepVersion = '10.0',
   panelWidth = '500',
   panelHeight = '500',
   cefParams = [
